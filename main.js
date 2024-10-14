@@ -8,7 +8,26 @@ const TEXTELEMENT = [
   "How many planets are there in our solar system?",
 ];
 
-const TEXTBUTTOM = ["London", "Berlin", "Paris", "Madrid", "Previous", "Next"];
+const TEXTBUTTOM = ["Previous", "Next"];
+
+const TEXTQUIZ = [
+  "London",
+  "Berlin",
+  "Paris",
+  "Madrid",
+  "Amazonas",
+  "Nilo",
+  "Yangtsé",
+  "Miño",
+  "ane Austen",
+  "Cervantes",
+  "William Shakerpeare",
+  "Charles Dickens",
+  "7",
+  "8",
+  "9",
+  "10",
+];
 
 let btns = [];
 
@@ -36,7 +55,7 @@ let iniciarElementos = () => {
     li.className = "answer";
     let btn = document.createElement("input");
     btn.type = "button";
-    btn.value = TEXTBUTTOM[i];
+    btn.value = TEXTQUIZ[i];
     btn.className = "answer-btn";
     btns.push(btn);
     li.append(btn);
@@ -48,14 +67,14 @@ let iniciarElementos = () => {
 
   let prevBtn = document.createElement("input");
   prevBtn.type = "button";
-  prevBtn.value = TEXTBUTTOM[4];
+  prevBtn.value = TEXTBUTTOM[0];
   prevBtn.disabled = true;
   prevBtn.className = "footer-btn:disabled";
   prevBtn.id = "prev";
 
   let nextBtn = document.createElement("input");
   nextBtn.type = "button";
-  nextBtn.value = TEXTBUTTOM[5];
+  nextBtn.value = TEXTBUTTOM[1];
   nextBtn.className = "footer-btn";
   nextBtn.id = "next";
 
@@ -70,81 +89,55 @@ let iniciarElementos = () => {
 };
 
 let accionNext = () => {
-  let p = document.getElementById("p");
-
-  let prevBtn = document.getElementById("prev");
-  prevBtn.className = "footer-btn";
-  prevBtn.disabled = false;
-  let nextBtn = document.getElementById("next");
-
-  switch (cont) {
-    case 1:
-      console.log(1);
-      activarBtn(prevBtn)
-      p.textContent = TEXTELEMENT[cont + 1];
-      cont++;
-      break;
-    case 2:
-      console.log(2);
-      p.textContent = TEXTELEMENT[cont + 1];
-      activarBtn(prevBtn)
-      cont++;
-      break;
-    case 3:
-      console.log(3);
-      p.textContent = TEXTELEMENT[cont + 1];
-      activarBtn(prevBtn);
-      desactivarBtn(nextBtn);
-      cont++;
-      break;
-    case 4:
-      console.log(4);
-      p.textContent = TEXTELEMENT[cont + 1];
-      desactivarBtn(nextBtn);
-      accionNext(prevBtn)
-      break;
-  }
+  actualizarEstado(1);
 };
 
 let accionPrev = () => {
-  let p = document.getElementById("p");
+  actualizarEstado(-1);
+};
 
+let actualizarEstado = (incremento) => {
+  let p = document.getElementById("p");
   let prevBtn = document.getElementById("prev");
   let nextBtn = document.getElementById("next");
 
-  switch (cont) {
-    case 1:
-      console.log(1);
-      desactivarBtn(prevBtn)
-      break;
-    case 2:
-      console.log(2);
-      p.textContent = TEXTELEMENT[cont - 1];
-      desactivarBtn(prevBtn)
-      cont--;
-      break;
-    case 3:
-      console.log(3);
-      p.textContent = TEXTELEMENT[cont - 1];
-      activarBtn(prevBtn)
-      cont--;
-      break;
-    case 4:
-      console.log(4);
-      p.textContent = TEXTELEMENT[cont - 1];
-      activarBtn(nextBtn)
-      cont--;
-      break;
+  cont += incremento;
+
+  p.textContent = TEXTELEMENT[cont];
+
+  if (cont === 1) {
+    desactivarBtn(prevBtn);
+    activarBtn(nextBtn);
+  }  else if (cont === 4) {
+    activarBtn(prevBtn);
+    desactivarBtn(nextBtn);
+  } else {
+    activarBtn(prevBtn);
+    activarBtn(nextBtn);
+  }
+
+  cambiarPregunta();
+};
+
+let cambiarPregunta = () => {
+  let btns = document.querySelectorAll(".answer-btn");
+  let startIndex = (cont - 1) * btns.length;  
+
+  for (let i = 0; i < btns.length; i++) {
+    btns[i].value = TEXTQUIZ[startIndex + i];  
   }
 };
 
+
 let activarBtn = (btn) => {
-  btn.className = "footer-btn";
+  btn.classList.remove("footer-btn:disabled");
+  btn.classList.add("footer-btn");
   btn.disabled = false;
 };
 
 let desactivarBtn = (btn) => {
-  btn.className = "footer-btn:disabled";
+  btn.classList.remove("footer-btn");
+  btn.classList.add("footer-btn:disabled");
   btn.disabled = true;
 };
 
