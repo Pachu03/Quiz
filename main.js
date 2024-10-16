@@ -4,27 +4,27 @@ const TEXTS = [
   {
     pregunta: "What is the capital of France?",
     respuesta: ["London", "Berlin", "Paris", "Madrid"],
+    pintado: null,
   },
   {
     pregunta: "What is the longest river in the world?",
     respuesta: ["Amazonas", "Nilo", "Yangtsé", "Miño"],
-  },
-  {
-    pregunta: "What is the longest river in the world?",
-    respuesta: ["Amazonas", "Nilo", "Yangtsé", "Miño"],
+    pintado: null,
   },
   {
     pregunta: "Who wrote Romeo and Juliet?",
     respuesta: [
-      "ane Austen",
+      "Jane Austen",
       "Cervantes",
-      "William Shakerpeare",
+      "William Shakespeare",
       "Charles Dickens",
     ],
+    pintado: null,
   },
   {
     pregunta: "How many planets are there in our solar system?",
     respuesta: ["7", "8", "9", "10"],
+    pintado: null,
   },
 ];
 
@@ -32,38 +32,25 @@ const TEXTELEMENT = "Quiz Question";
 
 const TEXTBUTTOM = ["Previous", "Next"];
 
-let btns = [];
+let currentQuestionIndex = 0;
 
-let cont = 1;
+let btns = [];
 
 let iniciarElementos = () => {
   let divContainer = document.createElement("div");
   divContainer.className = "container";
+
   let h2 = document.createElement("h2");
+  h2.textContent = TEXTELEMENT;
+
   let p = document.createElement("p");
   p.id = "p";
+  p.textContent = TEXTS[currentQuestionIndex].pregunta;
+
   let ul = document.createElement("ul");
   ul.className = "container-answers";
-  let li = document.createElement("li");
-  let btn = document.createElement("input");
 
-  h2.textContent = TEXTELEMENT;
-  p.textContent = TEXTS[0].pregunta;
-
-  btn.type = "button";
-  btn.textContent = TEXTBUTTOM[0];
-
-  for (let i = 0; i < 4; i++) {
-    let li = document.createElement("li");
-    li.className = "answer";
-    let btn = document.createElement("input");
-    btn.type = "button";
-    btn.value = TEXTS[0].respuesta[i];
-    btn.className = "answer-btn";
-    btns.push(btn);
-    li.append(btn);
-    ul.append(li);
-  }
+  crearPreguntas(currentQuestionIndex, ul);
 
   let div = document.createElement("div");
   div.className = "container-footer";
@@ -72,75 +59,73 @@ let iniciarElementos = () => {
   prevBtn.type = "button";
   prevBtn.value = TEXTBUTTOM[0];
   prevBtn.disabled = true;
-  prevBtn.className = "footer-btn:disabled";
+  prevBtn.className = "footer-btn";
   prevBtn.id = "prev";
+  prevBtn.addEventListener("click", () => accionPrev(p, ul, prevBtn, nextBtn));
 
   let nextBtn = document.createElement("input");
   nextBtn.type = "button";
   nextBtn.value = TEXTBUTTOM[1];
   nextBtn.className = "footer-btn";
   nextBtn.id = "next";
+  nextBtn.addEventListener("click", () => accionNext(p, ul, prevBtn, nextBtn));
 
   div.append(prevBtn, nextBtn);
 
   divContainer.append(h2, p, ul, div);
 
   BODY.append(divContainer);
-
-  nextBtn.addEventListener("click", accionNext);
-  prevBtn.addEventListener("click", accionPrev);
 };
 
-let accionNext = () => {
-  actualizarEstado(1);
+let crearPreguntas = (numPregunta, contenedor) => {
+  contenedor.innerHTML = "";
+
+  TEXTS[numPregunta].respuesta.forEach((respuesta) => {
+    let li = document.createElement("li");
+    li.className = "answer";
+    let btn = document.createElement("input");
+    btn.type = "button";
+    btn.value = respuesta;
+    btn.className = "answer-btn";
+    btns.push(btn);
+
+    // Si ya está pintado, le damos color
+    if (TEXTS[numPregunta].pintado === respuesta) {
+      btn.style.backgroundColor = "#3CB371";
+    }
+
+    btn.addEventListener("click", () => pintarPregunta(btn, numPregunta));
+    li.append(btn);
+    contenedor.append(li);
+  });
 };
 
-let accionPrev = () => {
-  actualizarEstado(-1);
+let accionNext = (p, ulContenedor, prevBtn, nextBtn) => {
+  currentQuestionIndex++;
+  actualizarPreguntas(p, ulContenedor, prevBtn, nextBtn);
 };
 
-let actualizarEstado = (incremento) => {
-  let p = document.getElementById("p");
-  let prevBtn = document.getElementById("prev");
-  let nextBtn = document.getElementById("next");
-
-  cont += incremento;
-
-  p.textContent = TEXTS[cont].pregunta;
-
-  if (cont === 1) {
-    desactivarBtn(prevBtn);
-    activarBtn(nextBtn);
-  } else if (cont === 4) {
-    activarBtn(prevBtn);
-    desactivarBtn(nextBtn);
-  } else {
-    activarBtn(prevBtn);
-    activarBtn(nextBtn);
-  }
-
-  cambiarPregunta();
+let accionPrev = (p, ulContenedor, prevBtn, nextBtn) => {
+  currentQuestionIndex--;
+  actualizarPreguntas(p, ulContenedor, prevBtn, nextBtn);
 };
 
-let cambiarPregunta = () => {
-  let btns = document.querySelectorAll(".answer-btn");
-  let startIndex = (cont - 1) * btns.length;
+let actualizarPreguntas = (p, ulContenedor, prevBtn, nextBtn) => {
+  p.textContent = TEXTS[currentQuestionIndex].pregunta;
+  crearPreguntas(currentQuestionIndex, ulContenedor);
 
-  for (let i = 0; i < btns.length; i++) {
-    btns[i].value = TEXTS[cont].respuesta[i];
-  }
+  prevBtn.disabled = currentQuestionIndex === 0;
+  nextBtn.disabled = currentQuestionIndex === TEXTS.length - 1;
 };
 
-let activarBtn = (btn) => {
-  btn.classList.remove("footer-btn:disabled");
-  btn.classList.add("footer-btn");
-  btn.disabled = false;
-};
+let pintarPregunta = (btn, numPregunta) => {
+  btns.forEach((button) => {
+    button.style.backgroundColor = ""; 
+  });
 
-let desactivarBtn = (btn) => {
-  btn.classList.remove("footer-btn");
-  btn.classList.add("footer-btn:disabled");
-  btn.disabled = true;
+  btn.style.backgroundColor = "#3CB371";
+
+  TEXTS[numPregunta].pintado = btn.value;
 };
 
 document.addEventListener("DOMContentLoaded", iniciarElementos);
