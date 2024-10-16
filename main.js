@@ -1,33 +1,36 @@
 const BODY = document.body;
 
-const TEXTELEMENT = [
-  "Quiz Question",
-  "What is the capital of France?",
-  "What is the longest river in the world?",
-  "Who wrote Romeo and Juliet?",
-  "How many planets are there in our solar system?",
+const TEXTS = [
+  {
+    pregunta: "What is the capital of France?",
+    respuesta: ["London", "Berlin", "Paris", "Madrid"],
+  },
+  {
+    pregunta: "What is the longest river in the world?",
+    respuesta: ["Amazonas", "Nilo", "Yangtsé", "Miño"],
+  },
+  {
+    pregunta: "What is the longest river in the world?",
+    respuesta: ["Amazonas", "Nilo", "Yangtsé", "Miño"],
+  },
+  {
+    pregunta: "Who wrote Romeo and Juliet?",
+    respuesta: [
+      "ane Austen",
+      "Cervantes",
+      "William Shakerpeare",
+      "Charles Dickens",
+    ],
+  },
+  {
+    pregunta: "How many planets are there in our solar system?",
+    respuesta: ["7", "8", "9", "10"],
+  },
 ];
+
+const TEXTELEMENT = "Quiz Question";
 
 const TEXTBUTTOM = ["Previous", "Next"];
-
-const TEXTQUIZ = [
-  "London",
-  "Berlin",
-  "Paris",
-  "Madrid",
-  "Amazonas",
-  "Nilo",
-  "Yangtsé",
-  "Miño",
-  "ane Austen",
-  "Cervantes",
-  "William Shakerpeare",
-  "Charles Dickens",
-  "7",
-  "8",
-  "9",
-  "10",
-];
 
 let btns = [];
 
@@ -44,8 +47,8 @@ let iniciarElementos = () => {
   let li = document.createElement("li");
   let btn = document.createElement("input");
 
-  h2.textContent = TEXTELEMENT[0];
-  p.textContent = TEXTELEMENT[1];
+  h2.textContent = TEXTELEMENT;
+  p.textContent = TEXTS[0].pregunta;
 
   btn.type = "button";
   btn.textContent = TEXTBUTTOM[0];
@@ -55,7 +58,7 @@ let iniciarElementos = () => {
     li.className = "answer";
     let btn = document.createElement("input");
     btn.type = "button";
-    btn.value = TEXTQUIZ[i];
+    btn.value = TEXTS[0].respuesta[i];
     btn.className = "answer-btn";
     btns.push(btn);
     li.append(btn);
@@ -103,12 +106,12 @@ let actualizarEstado = (incremento) => {
 
   cont += incremento;
 
-  p.textContent = TEXTELEMENT[cont];
+  p.textContent = TEXTS[cont].pregunta;
 
   if (cont === 1) {
     desactivarBtn(prevBtn);
     activarBtn(nextBtn);
-  }  else if (cont === 4) {
+  } else if (cont === 4) {
     activarBtn(prevBtn);
     desactivarBtn(nextBtn);
   } else {
@@ -121,13 +124,12 @@ let actualizarEstado = (incremento) => {
 
 let cambiarPregunta = () => {
   let btns = document.querySelectorAll(".answer-btn");
-  let startIndex = (cont - 1) * btns.length;  
+  let startIndex = (cont - 1) * btns.length;
 
   for (let i = 0; i < btns.length; i++) {
-    btns[i].value = TEXTQUIZ[startIndex + i];  
+    btns[i].value = TEXTS[cont].respuesta[i];
   }
 };
-
 
 let activarBtn = (btn) => {
   btn.classList.remove("footer-btn:disabled");
