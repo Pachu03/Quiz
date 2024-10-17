@@ -171,7 +171,52 @@ let accionCheck = () => {
       correptas++;
     }
   }
-  alert(correptas + " correct answers from " + TEXTS.length);
+
+  creacionModal(correptas);
+};
+
+let creacionModal = (correctas) => {
+  let divModal = document.createElement("div");
+  divModal.className = "modal";
+
+  let divContent = document.createElement("div");
+  divContent.className = "modal-content";
+
+  let spanClose = document.createElement("span");
+  spanClose.className = "modal-close";
+  spanClose.innerHTML = "&times;";
+  spanClose.addEventListener("click", () => cerrarModal(divModal));
+
+  let h2Modal = document.createElement("h2");
+  h2Modal.textContent = "Results";
+
+  let pModal = document.createElement("p");
+  pModal.textContent =
+    "You have " + correctas + " correct answers out of " + TEXTS.length;
+
+  divContent.appendChild(spanClose);
+  divContent.appendChild(h2Modal);
+  divContent.appendChild(pModal);
+  divModal.appendChild(divContent);
+  document.body.appendChild(divModal);
+
+  abrirModal(divModal);
+
+  divModal.addEventListener("click", (e) => {
+    if (e.target === divModal) {
+      cerrarModal(divModal);
+    }
+  });
+};
+
+let abrirModal = (divModal) => {
+  divModal.style.opacity = "1";
+  divModal.style.visibility = "visible";
+};
+
+let cerrarModal = (divModal) => {
+  divModal.style.opacity = "0";
+  divModal.style.visibility = "hidden";
 };
 
 document.addEventListener("DOMContentLoaded", iniciarElementos);
