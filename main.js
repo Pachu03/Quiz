@@ -32,7 +32,7 @@ const TEXTELEMENT = "Quiz Question";
 
 const TEXTBUTTOM = ["Previous", "Next"];
 
-let currentQuestionIndex = 0;
+let indexPregunta = 0;
 
 let btns = [];
 
@@ -45,12 +45,12 @@ let iniciarElementos = () => {
 
   let p = document.createElement("p");
   p.id = "p";
-  p.textContent = TEXTS[currentQuestionIndex].pregunta;
+  p.textContent = TEXTS[indexPregunta].pregunta;
 
   let ul = document.createElement("ul");
   ul.className = "container-answers";
 
-  crearPreguntas(currentQuestionIndex, ul);
+  crearPreguntas(indexPregunta, ul);
 
   let div = document.createElement("div");
   div.className = "container-footer";
@@ -89,7 +89,6 @@ let crearPreguntas = (numPregunta, contenedor) => {
     btn.className = "answer-btn";
     btns.push(btn);
 
-    // Si ya está pintado, le damos color
     if (TEXTS[numPregunta].pintado === respuesta) {
       btn.style.backgroundColor = "#3CB371";
     }
@@ -101,21 +100,21 @@ let crearPreguntas = (numPregunta, contenedor) => {
 };
 
 let accionNext = (p, ulContenedor, prevBtn, nextBtn) => {
-  currentQuestionIndex++;
+  indexPregunta++;
   actualizarPreguntas(p, ulContenedor, prevBtn, nextBtn);
 };
 
 let accionPrev = (p, ulContenedor, prevBtn, nextBtn) => {
-  currentQuestionIndex--;
+  indexPregunta--;
   actualizarPreguntas(p, ulContenedor, prevBtn, nextBtn);
 };
 
 let actualizarPreguntas = (p, ulContenedor, prevBtn, nextBtn) => {
-  p.textContent = TEXTS[currentQuestionIndex].pregunta;
-  crearPreguntas(currentQuestionIndex, ulContenedor);
+  p.textContent = TEXTS[indexPregunta].pregunta;
+  crearPreguntas(indexPregunta, ulContenedor);
 
-  prevBtn.disabled = currentQuestionIndex === 0;
-  nextBtn.disabled = currentQuestionIndex === TEXTS.length - 1;
+  prevBtn.disabled = indexPregunta === 0;
+  nextBtn.disabled = indexPregunta === TEXTS.length - 1;
 };
 
 let pintarPregunta = (btn, numPregunta) => {
