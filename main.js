@@ -5,11 +5,13 @@ const TEXTS = [
     pregunta: "What is the capital of France?",
     respuesta: ["London", "Berlin", "Paris", "Madrid"],
     pintado: null,
+    correpta: "Paris",
   },
   {
     pregunta: "What is the longest river in the world?",
     respuesta: ["Amazonas", "Nilo", "Yangtsé", "Miño"],
     pintado: null,
+    correpta: "Nilo",
   },
   {
     pregunta: "Who wrote Romeo and Juliet?",
@@ -20,21 +22,25 @@ const TEXTS = [
       "Charles Dickens",
     ],
     pintado: null,
+    correpta: "William Shakespeare",
   },
   {
     pregunta: "How many planets are there in our solar system?",
     respuesta: ["7", "8", "9", "10"],
     pintado: null,
+    correpta: "8",
   },
 ];
 
 const TEXTELEMENT = "Quiz Question";
 
-const TEXTBUTTOM = ["Previous", "Next"];
+const TEXTBUTTOM = ["Previous", "Check", "Next"];
 
 let indexPregunta = 0;
 
 let btns = [];
+
+let color = "#3CB371";
 
 let iniciarElementos = () => {
   let divContainer = document.createElement("div");
@@ -61,16 +67,30 @@ let iniciarElementos = () => {
   prevBtn.disabled = true;
   prevBtn.className = "footer-btn";
   prevBtn.id = "prev";
-  prevBtn.addEventListener("click", () => accionPrev(p, ul, prevBtn, nextBtn));
+  prevBtn.addEventListener("click", () =>
+    accionPrev(p, ul, prevBtn, nextBtn, checkBtn)
+  );
+
+  let checkBtn = document.createElement("input");
+  checkBtn.type = "button";
+  checkBtn.value = TEXTBUTTOM[1];
+  checkBtn.disabled = true;
+  checkBtn.className = "footer-btn";
+  checkBtn.id = "check";
+  checkBtn.addEventListener("click", () =>
+    accionCheck(p, ul, prevBtn, nextBtn)
+  );
 
   let nextBtn = document.createElement("input");
   nextBtn.type = "button";
-  nextBtn.value = TEXTBUTTOM[1];
+  nextBtn.value = TEXTBUTTOM[2];
   nextBtn.className = "footer-btn";
   nextBtn.id = "next";
-  nextBtn.addEventListener("click", () => accionNext(p, ul, prevBtn, nextBtn));
+  nextBtn.addEventListener("click", () =>
+    accionNext(p, ul, prevBtn, nextBtn, checkBtn)
+  );
 
-  div.append(prevBtn, nextBtn);
+  div.append(prevBtn, checkBtn, nextBtn);
 
   divContainer.append(h2, p, ul, div);
 
@@ -90,7 +110,7 @@ let crearPreguntas = (numPregunta, contenedor) => {
     btns.push(btn);
 
     if (TEXTS[numPregunta].pintado === respuesta) {
-      btn.style.backgroundColor = "#3CB371";
+      btn.style.backgroundColor = color;
     }
 
     btn.addEventListener("click", () => pintarPregunta(btn, numPregunta));
@@ -119,12 +139,39 @@ let actualizarPreguntas = (p, ulContenedor, prevBtn, nextBtn) => {
 
 let pintarPregunta = (btn, numPregunta) => {
   btns.forEach((button) => {
-    button.style.backgroundColor = ""; 
+    button.style.backgroundColor = "";
   });
 
-  btn.style.backgroundColor = "#3CB371";
+  btn.style.backgroundColor = color;
 
   TEXTS[numPregunta].pintado = btn.value;
+
+  comprobarRespuestas();
+};
+
+let comprobarRespuestas = () => {
+  let pintada = 0;
+
+  TEXTS.forEach((elemento) => {
+    console.log(elemento.pintado);
+    if (elemento.pintado != null) {
+      pintada++;
+    }
+  });
+
+  if (pintada === TEXTS.length) {
+    document.getElementById("check").disabled = false;
+  }
+};
+
+let accionCheck = () => {
+  let correptas = 0;
+  for (let i = 0; i < TEXTS.length; i++) {
+    if (TEXTS[i].pintado === TEXTS[i].correpta) {
+      correptas++;
+    }
+  }
+  alert(correptas + " correct answers from " + TEXTS.length);
 };
 
 document.addEventListener("DOMContentLoaded", iniciarElementos);
